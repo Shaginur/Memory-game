@@ -1,11 +1,16 @@
-const EMOJI = ["🥔", "🍒", "🥑", "🌽", "🥕", "🍇", "🍉", "🍌"];
+const EMOJI = ["🥔", "🍒", "🥑", "🌽", "🥕", "🍇", "🍉", "🍌", "🥭", "🍍"];
 const emoji = EMOJI.concat(EMOJI);
 
+//функция перемешивает изначальный масив получает первые восемь элементов создает пары и снова перемешивает их
 function shuffle(emoji) {
-  return emoji.sort(() => Math.random(emoji) - 0.5);
+  const shaffleEmoji = emoji.sort(() => Math.random(emoji) - 0.5);
+  const receivingEmoji = shaffleEmoji.slice(0, 8);
+  const rezalt = [...receivingEmoji, ...receivingEmoji].sort(
+    () => Math.random([...receivingEmoji, ...receivingEmoji]) - 0,
+    5
+  );
+  return rezalt;
 }
-
-// "🥭", "🍍"];
 
 /**
  * @property {number} moves - количество шагов
@@ -38,7 +43,7 @@ const SELECTORS = {
 };
 
 Render();
-
+//отрисовывает карточки наполняя результатом функции shuffle(emoji)
 function Render() {
   const shuffleEmoji = shuffle(emoji);
 
@@ -51,17 +56,39 @@ function Render() {
   });
 }
 
+//функция переворота карточек
 function flippCards() {
+  const contentCards = [];
+
   const cards = SELECTORS.board.children;
+
   [...cards].forEach((element) => {
-    element.addEventListener("click", () => {
-     element.classList.add('flipped')
+
+    element.addEventListener("click", (event) => {
+
+      element.classList.add("flipped");
+
+      contentCards.push(event.target.nextSibling.nextSibling?.innerHTML);
+
+      for(let i = 0; i < contentCards.length; i++) {
+
+        let eventRemove = document.querySelectorAll('.flipped'); 
+
+        if(contentCards.length > 2 && contentCards[i] !== contentCards[i + 1]) {
+
+          eventRemove[0].classList.remove('flipped')
+
+          eventRemove[1].classList.remove('flipped')
+        }
+        STATE.totalFlipp + 2
+
+      }
     });
   });
 }
 
-function flipBackCards() {
-    
-}
+//масив с содержимым карт
+
+function flipBackCards() {}
 
 flippCards();
