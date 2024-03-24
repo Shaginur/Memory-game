@@ -1,9 +1,8 @@
 const EMOJI = ["🥔", "🍒", "🥑", "🌽", "🥕", "🍇", "🍉", "🍌", "🥭", "🍍"];
-const emoji = EMOJI.concat(EMOJI);
 
 //функция перемешивает изначальный масив получает первые восемь элементов создает пары и снова перемешивает их
-function shuffle(emoji) {
-  const shaffleEmoji = emoji.sort(() => Math.random(emoji) - 0.5);
+function shuffle(EMOJI) {
+  const shaffleEmoji = EMOJI.sort(() => Math.random(EMOJI) - 0.5);
   const receivingEmoji = shaffleEmoji.slice(0, 8);
   const rezalt = [...receivingEmoji, ...receivingEmoji].sort(
     () => Math.random([...receivingEmoji, ...receivingEmoji]) - 0,
@@ -45,7 +44,7 @@ const SELECTORS = {
 Render();
 //отрисовывает карточки наполняя результатом функции shuffle(emoji)
 function Render() {
-  const shuffleEmoji = shuffle(emoji);
+  const shuffleEmoji = shuffle(EMOJI);
 
   shuffleEmoji.forEach((element) => {
     SELECTORS.board.innerHTML += `<div class="card">
@@ -58,7 +57,6 @@ function Render() {
 
 //функция переворота карточек
 function flippCards() {
-  const contentCards = [];
 
   const cards = SELECTORS.board.children;
 
@@ -68,27 +66,42 @@ function flippCards() {
 
       element.classList.add("flipped");
 
-      contentCards.push(event.target.nextSibling.nextSibling?.innerHTML);
-
-      for(let i = 0; i < contentCards.length; i++) {
-
-        let eventRemove = document.querySelectorAll('.flipped'); 
-
-        if(contentCards.length > 2 && contentCards[i] !== contentCards[i + 1]) {
-
-          eventRemove[0].classList.remove('flipped')
-
-          eventRemove[1].classList.remove('flipped')
-        }
-        STATE.totalFlipp + 2
-
-      }
+      STATE.moves++
+      SELECTORS.moves.innerHTML = `${STATE.moves} шагов`
     });
   });
 }
 
-//масив с содержимым карт
 
-function flipBackCards() {}
+//функция возврата карточек удалением класса
+function flipBackCards() {
 
-flippCards();
+ const cardBack = document.querySelectorAll('.card')
+ cardBack.forEach((item) => {
+  if(item.classList.contains('flipped')) {
+    item.classList.remove('flipped')
+
+  }
+ })
+}
+
+flipBackCards()
+//функция начала игры вызывает другие функции проверяет условия
+SELECTORS.start.addEventListener('click', () => {
+  timerSetInterval()
+  flippCards()
+
+
+
+})
+
+//функция вызывает timerPlus() казждую секунду
+function timerSetInterval() {
+   setInterval(timerPlus, 1000)
+ }
+
+ //функция что увеличевает значение STATE.time на один
+ function timerPlus() {
+  STATE.time++
+  SELECTORS.timer.innerHTML = `время: ${STATE.time} sec`;
+ }
